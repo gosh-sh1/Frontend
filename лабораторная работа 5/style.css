@@ -1,0 +1,481 @@
+/* Базовые настройки */
+:root {
+ color-scheme: light;
+ --base-font-size: 16px;
+ /* Основной текст */
+ --color-text-primary: #333;
+ /* Фон страницы */
+ --color-background-light: #f4f6f8;
+ /* Фон карточек */
+ --color-surface: #fff;
+ /* Акцентный цвет */
+ --color-accent: #1a237e;
+ /* Светлый акцентный цвет */
+ --color-accent-light: #e8eaf6;
+ /* Цвет при наведении */
+ --color-hover: #e53935;
+ /* Цвет границ */
+ --color-border: #d0d4dc;
+ /* Фон вложенных карточек */
+ --color-card: #fafafa;
+ /* Линия над подвалом */
+ --color-footer-border: #ddd;
+ /* Закругление углов */
+ --radius-card: 8px;
+ /* Отступ между блоками */
+ --gap-block: 1.5rem;
+ /* Отступ между карточками */
+ --gap-card: 1rem;
+ /* Ширина правой панели */
+ --sidebar-width: 300px;
+ /* Тень карточек */
+ --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+ font-family: Arial, sans-serif;
+ font-size: var(--base-font-size);
+ color: var(--color-text-primary);
+ background-color: var(--color-background-light);
+ line-height: 1.6;
+ margin: 0 auto;
+ padding: var(--gap-block) 1rem;
+ max-width: 1200px;
+}
+/* ОСНОВНОЙ КАРКАС СТРАНИЦЫ НА CSS GRID */
+body {
+ display: grid;
+ min-height: 100vh;
+ grid-template-columns: minmax(0, 1fr);
+ grid-template-rows: auto 1fr auto auto; /* Шапка — Контент — Доп. блок — Подвал */
+ grid-template-areas:
+  "header"
+  "main"
+  "extra"
+  "footer";
+}
+/* Каркас главной: меню лежит вне шапки */
+body:has(> nav) {
+ grid-template-rows: auto auto 1fr auto auto;
+ grid-template-areas:
+  "header"
+  "nav"
+  "main"
+  "extra"
+  "footer";
+}
+body > header { grid-area: header; }
+body > nav { grid-area: nav; }
+body > main { grid-area: main; }
+body > aside { grid-area: extra; }
+body > footer { grid-area: footer; }
+/* Скрываем пустые блоки и линии */
+body > article,
+body > aside:not(:has(*)),
+hr {
+ display: none;
+}
+/* Шапка */
+header {
+ background-color: var(--color-surface);
+ padding: 1.5rem 1rem;
+ text-align: center;
+ border-radius: var(--radius-card);
+ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ margin-bottom: var(--gap-block);
+}
+header h1 { margin: 0 0 0.5rem; }
+header p { margin: 0 0 1rem; }
+header > :last-child { margin-bottom: 0; }
+/* Навигация (Flexbox) */
+nav {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ align-items: center;
+ gap: 0.5rem;
+}
+nav h2 {
+ flex: 0 0 100%; /* Заголовок меню на всю ширину */
+ margin: 0 0 0.25rem;
+ font-size: var(--base-font-size);
+ text-transform: uppercase;
+ letter-spacing: 1px;
+}
+nav p { margin: 0; }
+nav a {
+ display: block;
+ padding: 0.5em 1em;
+ border-radius: var(--radius-card);
+ color: var(--color-accent);
+ font-weight: bold;
+ text-decoration: none;
+ transition: all 0.2s ease-in-out;
+}
+nav a:hover {
+ background-color: var(--color-accent);
+ color: var(--color-surface);
+}
+/* Навигация на главной странице */
+body > nav {
+ background-color: var(--color-surface);
+ padding: 1rem;
+ border-radius: var(--radius-card);
+ box-shadow: var(--shadow-card);
+ margin-bottom: var(--gap-block);
+}
+/* Ссылки */
+a { color: var(--color-accent); }
+a:hover { color: var(--color-hover); }
+nav a:hover { color: var(--color-surface); }
+a:focus-visible {
+ outline: 2px solid var(--color-hover);
+ outline-offset: 3px;
+}
+/* Основной контент: контент + правая панель */
+main {
+ display: grid;
+ grid-template-columns: minmax(0, 1fr) var(--sidebar-width);
+ column-gap: var(--gap-block);
+ row-gap: 0; /* Отступы задаются через margin */
+ align-content: start;
+ margin-bottom: var(--gap-block);
+}
+main:not(:has(> aside)) { grid-template-columns: minmax(0, 1fr); }
+main > * {
+ grid-column: 1;
+ margin: 0 0 var(--gap-block);
+}
+/* Правая панель */
+main > aside {
+ grid-column: 2;
+ grid-row: 1 / span 10;
+ align-self: start;
+ position: sticky;
+ top: 1rem;
+ max-height: calc(100vh - 2rem);
+ overflow-y: auto;
+}
+/* Секции */
+section {
+ padding: 1.5rem;
+ background-color: var(--color-surface);
+ border-radius: var(--radius-card);
+ box-shadow: var(--shadow-card);
+ scroll-margin-top: 1rem;
+}
+section > h2 { margin-top: 0; }
+article { margin: 0; }
+/* Дополнительная информация */
+aside {
+ padding: 1.25rem;
+ background-color: var(--color-accent-light);
+ border-radius: var(--radius-card);
+}
+aside h2 {
+ margin-top: 0;
+ font-size: calc(var(--base-font-size) * 1.375);
+}
+aside > :last-child { margin-bottom: 0; }
+body > aside { margin-bottom: var(--gap-block); }
+/* Футер */
+footer {
+ padding: 1rem;
+ text-align: center;
+ background-color: var(--color-background-light);
+ border-top: 1px solid var(--color-footer-border);
+}
+footer:not(:has(*))::after {
+ content: "© 2026 Шальнев Георгий Сергеевич, ПИЖ-б-о-26-2(2)";
+}
+/* Типографика */
+h1 {
+ text-transform: uppercase;
+ color: var(--color-accent);
+ font-size: calc(var(--base-font-size) * 2.5);
+ letter-spacing: 1px;
+ text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+h2 {
+ color: var(--color-accent);
+ font-size: calc(var(--base-font-size) * 1.875);
+ margin-bottom: 1rem;
+}
+h3 {
+ color: var(--color-accent);
+ font-size: calc(var(--base-font-size) * 1.375);
+ margin-bottom: 1rem;
+}
+p {
+ line-height: 1.5;
+ font-size: 1em;
+ margin-bottom: 1.5rem;
+}
+ul,
+ol {
+ padding-left: 20px;
+ margin-bottom: 1.5rem;
+}
+li > p {
+ /* Чтобы абзацы внутри списка не имели лишних отступов сверху */
+ margin-top: 0;
+}
+li ul { margin: 0.5rem 0 0; }
+/* Словарь определений */
+dl {
+ display: grid;
+ grid-template-columns: max-content minmax(0, 1fr);
+ gap: 0.5rem 1.5rem;
+ margin: 0;
+}
+dt {
+ color: var(--color-accent);
+ font-weight: bold;
+}
+dd { margin: 0; }
+/* Изображения */
+img {
+ max-width: 100%;
+ height: auto;
+ display: block;
+ border-radius: 6px;
+ margin-bottom: 1rem;
+}
+/* Фото + текст в две колонки (Grid) */
+article:has(> img) {
+ display: grid;
+ grid-template-columns: minmax(200px, 1fr) 2fr;
+ grid-template-rows: auto auto auto 1fr; /* Последняя строка забирает высоту фото */
+ column-gap: var(--gap-block);
+ align-items: start;
+}
+article:has(> img) > img {
+ grid-column: 1;
+ grid-row: 1 / -1;
+ margin: 0;
+ object-fit: cover;
+}
+article:has(> img) > :not(img) { grid-column: 2; }
+/* Списки под фото на всю ширину */
+article:has(> img) > :is(ul, ol, dl) { grid-column: 1 / -1; }
+/* Блок с фото на главной странице */
+main > section:has(> img) {
+ display: grid;
+ grid-template-columns: minmax(180px, 320px) minmax(0, 1fr);
+ grid-template-rows: auto 1fr;
+ column-gap: 2rem;
+ align-items: center;
+}
+main > section:has(> img) > img {
+ grid-column: 1;
+ grid-row: 1 / -1;
+ margin: 0;
+}
+main > section:has(> img) > :not(img) { grid-column: 2; }
+/* Карточки */
+article > ul:has(> li > ul) > li,
+#skills article > ol > li,
+#hobbies article > ol > li,
+#students article > ul > li,
+#components article > ul > li {
+ padding: 0.75rem 1rem;
+ border-radius: var(--radius-card);
+ background-color: var(--color-card);
+ border: 1px solid var(--color-border);
+ margin: 0;
+ transition: box-shadow 0.2s ease-in-out;
+}
+article > ul:has(> li > ul) > li:hover,
+#skills article > ol > li:hover,
+#hobbies article > ol > li:hover,
+#students article > ul > li:hover,
+#components article > ul > li:hover {
+ box-shadow: var(--shadow-card);
+}
+/* Карточки друзей (Grid: число колонок зависит от ширины) */
+article > ul:has(> li > ul) {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+ gap: var(--gap-card);
+ list-style: none;
+ padding: 0;
+}
+/* Сетка карточек (навыки, увлечения, компоненты) */
+#skills article > ol,
+#hobbies article > ol,
+#components article > ul {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+ gap: var(--gap-card);
+ list-style: none;
+ padding: 0;
+}
+/* Список студентов группы */
+#students article > ul {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+ gap: var(--gap-card);
+ list-style: none;
+ padding: 0;
+}
+/* Страница СПС: схема архитектуры */
+#architecture article { display: block; }
+#architecture img {
+ margin: 1rem auto;
+ border: 1px solid var(--color-border);
+}
+/* Страница СПС: ссылки на документацию (Flexbox) */
+#integration article > ul {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 0.75rem;
+ list-style: none;
+ padding: 0;
+}
+#integration article > ul a {
+ display: inline-block;
+ padding: 0.5em 1em;
+ border: 1px solid var(--color-accent);
+ border-radius: var(--radius-card);
+ text-decoration: none;
+ font-weight: bold;
+ transition: all 0.2s ease-in-out;
+}
+#integration article > ul a:hover {
+ background-color: var(--color-accent);
+ color: var(--color-surface);
+}
+/* Акцентная линия у секций с id */
+#skills, #students, #information, #hobbies,
+#architecture, #components, #integration, #dictionary {
+ border-left: 5px solid var(--color-accent);
+}
+/* Таблицы: горизонтальная прокрутка внутри самой таблицы */
+table {
+ display: block;
+ max-width: 100%;
+ overflow-x: auto;
+ border-collapse: collapse;
+ margin-bottom: 1.5rem;
+}
+th, td {
+ padding: 0.5rem 0.75rem;
+ border: 1px solid var(--color-border);
+ text-align: left;
+}
+th {
+ background-color: var(--color-accent-light);
+ color: var(--color-accent);
+}
+/* Страница СПС: оглавление — сетка кнопок */
+article > ol:has(> li > a) {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+ gap: var(--gap-card);
+ list-style: none;
+ padding: 0;
+}
+article > ol:has(> li > a) > li > a {
+ display: block;
+ height: 100%;
+ padding: 0.75rem 1rem;
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius-card);
+ background-color: var(--color-card);
+ text-decoration: none;
+ font-weight: bold;
+ transition: box-shadow 0.2s ease-in-out;
+}
+article > ol:has(> li > a) > li > a:hover { box-shadow: var(--shadow-card); }
+/* Длинные слова и ссылки не должны ломать вёрстку */
+body { overflow-wrap: break-word; }
+
+/* ===== АДАПТИВНОСТЬ =====
+   Десктоп: от 1024px (базовые стили выше)
+   Планшет: 768–1023px
+   Телефон: до 767px */
+
+/* Планшет и уже: правая панель уходит под контент */
+@media (max-width: 1023px) {
+ main { grid-template-columns: minmax(0, 1fr); }
+ main > aside {
+  grid-column: 1;
+  grid-row: auto;
+  position: static;
+  max-height: none;
+ }
+}
+
+/* Только планшет: фото переезжает вправо (смена порядка через grid) */
+@media (min-width: 768px) and (max-width: 1023px) {
+ article:has(> img) { grid-template-columns: minmax(0, 2fr) minmax(200px, 1fr); }
+ article:has(> img) > img { grid-column: 2; }
+ article:has(> img) > :not(img) { grid-column: 1; }
+ article:has(> img) > :is(ul, ol, dl) { grid-column: 1 / -1; }
+ main > section:has(> img) { grid-template-columns: minmax(0, 1fr) minmax(180px, 280px); }
+ main > section:has(> img) > img { grid-column: 2; }
+ main > section:has(> img) > :not(img) { grid-column: 1; }
+}
+
+/* Телефон */
+@media (max-width: 767px) {
+ :root {
+  --base-font-size: 15px;
+  --gap-block: 1rem;
+  --gap-card: 0.75rem;
+ }
+ body { padding: 0.75rem; }
+ /* Боковые панели на телефоне скрыты */
+ aside,
+ main > aside,
+ body > aside { display: none; }
+ /* Меню в столбик */
+ nav {
+  flex-direction: column;
+  align-items: stretch;
+ }
+ nav h2 { flex-basis: auto; text-align: center; }
+ nav a { padding: 0.75em 1em; text-align: center; }
+ /* Фото над текстом */
+ article:has(> img),
+ main > section:has(> img) { display: block; }
+ article:has(> img) > img,
+ main > section:has(> img) > img { margin-bottom: 1rem; }
+ dl { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+ dd { margin-bottom: 0.75rem; }
+ h1 { font-size: calc(var(--base-font-size) * 1.75); }
+ h2 { font-size: calc(var(--base-font-size) * 1.5); }
+ h3 { font-size: calc(var(--base-font-size) * 1.25); }
+ section { padding: 1rem; }
+ /* Карточки в одну колонку */
+ article > ul:has(> li > ul),
+ article > ol:has(> li > a),
+ #skills article > ol,
+ #hobbies article > ol,
+ #components article > ul,
+ #students article > ul {
+  grid-template-columns: minmax(0, 1fr);
+ }
+ /* СПС: ссылки на документацию на всю ширину, словарь с разделителями */
+ #integration article > ul { flex-direction: column; }
+ #integration article > ul a { display: block; text-align: center; }
+ #dictionary dt {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+ }
+ #dictionary dt:first-of-type { padding-top: 0; border-top: 0; }
+}
+
+/* Страница СПС: на планшете и десктопе компоненты — по две колонки */
+@media (min-width: 768px) {
+ #components article > ul {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+ }
+}
+
+/* Уважаем настройку «уменьшить движение» */
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto; }
+ * { transition: none !important; }
+}
